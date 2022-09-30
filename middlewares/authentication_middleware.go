@@ -7,7 +7,7 @@ import (
 )
 
 func AuthenticationMiddleware(c *gin.Context) {
-	if true {
+	if false {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
