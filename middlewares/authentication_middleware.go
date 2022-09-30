@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func CustomMiddleware(c *gin.Context) {
-	if false {
+func AuthenticationMiddleware(c *gin.Context) {
+	if true {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
