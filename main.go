@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"kurdi-go/database"
 	"kurdi-go/routes"
 )
 
 func main() {
+	//app
+	app := fiber.New()
 
 	//Database
 	// Connect to database
@@ -17,12 +19,10 @@ func main() {
 	database.SQLLiteAutoMigrate()
 
 	// Routes
-	router := gin.Default()
-	routes.BooksRoutes(router)
-
-	// Run the server
-	err := router.Run()
+	routes.BooksRoutes(app)
+	err := app.Listen(":3000")
 	if err != nil {
 		return
 	}
+
 }
