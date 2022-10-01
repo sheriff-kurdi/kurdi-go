@@ -7,6 +7,7 @@ import (
 )
 
 func BooksRoutes(booksApp *fiber.App) {
+	bookController := controllers.NewBookController()
 	booksApp.Use(middlewares.AuthenticationMiddleware)
 	booksApp.Get("/get", func(c *fiber.Ctx) error {
 		var result = 5
@@ -17,10 +18,9 @@ func BooksRoutes(booksApp *fiber.App) {
 		})
 	})
 
-	booksApp.Get("/books", controllers.Find)
-	booksApp.Get("/books/bulk-edit", controllers.BulkEdit)
-	booksApp.Get("/books/:id", controllers.FindById)
-	booksApp.Post("/books", controllers.Create)
-	booksApp.Patch("/books/:id", controllers.Update)
-	booksApp.Delete("/books/:id", controllers.Delete)
+	booksApp.Get("/books", bookController.GetAll)
+	booksApp.Get("/books/:id", bookController.FindById)
+	booksApp.Post("/books", bookController.Create)
+	booksApp.Patch("/books/:id", bookController.Update)
+	booksApp.Delete("/books/:id", bookController.Delete)
 }
