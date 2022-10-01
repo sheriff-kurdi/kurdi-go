@@ -1,17 +1,17 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
-	"log"
+	"github.com/gofiber/fiber/v2"
 	"net/http"
 )
 
-func AuthenticationMiddleware(c *gin.Context) {
+func AuthenticationMiddleware(c *fiber.Ctx) error {
 	if false {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		return c.Status(http.StatusUnauthorized).JSON(&fiber.Map{
+			"success": false,
+			"message": "Unauthorized",
+		})
 	}
+	return c.Next()
 
-	c.Next()
-
-	log.Println("Hi")
 }

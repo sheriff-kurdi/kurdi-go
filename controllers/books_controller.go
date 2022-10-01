@@ -1,112 +1,146 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"kurdi-go/database"
 	"kurdi-go/models"
 	"kurdi-go/requests"
+	"kurdi-go/responses"
 	"net/http"
 )
 
-// FindBooks GET /books
-// Find all books
-func FindBooks(c *gin.Context) {
-	var books []models.Book
-	database.PostgresDB.Find(&books)
-
-	c.JSON(http.StatusOK, gin.H{"data": books})
+type BookController struct {
 }
 
-// BulkEdit GET /books/bulk-edit
-// Bulk Edit all books
-func BulkEdit(c *gin.Context) {
+func NewBookController() *BookController {
+	controller := BookController{}
+	return &controller
+}
 
-	var books []models.Book
-	database.PostgresDB.Find(&books)
-
-	for _, book := range books {
-		book.Title = "oo"
-	}
-	books[0].Title = "Database"
-
-	booksJson := "[\n\t\t{\n\t\t\t\"ID\": 0,\n\t\t\t\"CreatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"UpdatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"DeletedAt\": null,\n\t\t\t\"id\": 1,\n\t\t\t\"title\": \"1\",\n\t\t\t\"author\": \"rr\"\n\t\t},\n\t\t{\n\t\t\t\"ID\": 0,\n\t\t\t\"CreatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"UpdatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"DeletedAt\": null,\n\t\t\t\"id\": 2,\n\t\t\t\"title\": \"2\",\n\t\t\t\"author\": \"tt\"\n\t\t},\n\t\t{\n\t\t\t\"ID\": 0,\n\t\t\t\"CreatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"UpdatedAt\": \"0001-01-01T00:00:00Z\",\n\t\t\t\"DeletedAt\": null,\n\t\t\t\"id\": 3,\n\t\t\t\"title\": \"3\",\n\t\t\t\"author\": \"yy\"\n\t\t}\n\t]"
-
-	bulkUpdateQuery := `update books 
-							set title = temp.title
-							FROM (SELECT * FROM json_to_recordset(?) AS X("title" varchar, "id" int)) AS temp
-							WHERE books.id = temp.id`
-	rows, err := database.PostgresDB.Raw(bulkUpdateQuery, booksJson).Rows()
+// GetAll GET /books
+// GetAll all books
+func (controller BookController) GetAll(c *fiber.Ctx) error {
+	var books []responses.BookResponse
+	err := database.PostgresDB.Model(&models.Book{}).Scan(&books).Error
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"data": err.Error()})
+		return c.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": rows})
+	return c.Status(http.StatusOK).JSON(&fiber.Map{
+		"success": true,
+		"message": "",
+		"data":    books,
+	})
 }
 
-// FindBook GET /books/:id
+// FindById GET /books/:id
 // Find a book
-func FindBook(c *gin.Context) {
+func (controller BookController) FindById(ctx *fiber.Ctx) error {
 	// Get model if exist
-	var book models.Book
-	if err := database.PostgresDB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
+	var book responses.BookResponse
+	id := ctx.Params("id")
+	if err := database.PostgresDB.Model(models.Book{}).Where("id = ?", id).First(&book).Scan(&book).Error; err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": book})
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"success": true,
+		"message": "",
+		"data":    book,
+	})
 }
 
-// CreateBook POST /books
+// Create POST /books
 // Create new book
-func CreateBook(c *gin.Context) {
+func (controller BookController) Create(ctx *fiber.Ctx) error {
 	var request requests.BookRequest
-	if err := c.Bind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	if err := ctx.BodyParser(&request); err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
 
-	// Create book
-	book := models.Book{Title: request.Title, Author: request.Author}
-	database.PostgresDB.Create(&book)
+	bookModel := models.Book{Author: request.Author, Title: request.Title}
+	err := database.PostgresDB.Create(&bookModel).Error
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
+	}
 
-	c.JSON(http.StatusOK, gin.H{"data": book})
+	return ctx.Status(http.StatusCreated).JSON(&fiber.Map{
+		"success": true,
+		"message": "",
+		"data":    bookModel,
+	})
 }
 
-// UpdateBook PATCH /books/:id
+// Update PATCH /books/:id
 // Update a book
-func UpdateBook(c *gin.Context) {
+func (controller BookController) Update(ctx *fiber.Ctx) error {
 	// Get model if exist
 	var book models.Book
-	if err := database.PostgresDB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
+	id := ctx.Params("id")
+	if err := database.PostgresDB.Where("id = ?", id).First(&book).Error; err != nil {
+		return ctx.Status(http.StatusNotFound).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
 
 	// Validate request
 	var request requests.BookRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	if err := ctx.BodyParser(&request); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
 
 	book.Title = request.Title
 	book.Author = request.Author
-	database.PostgresDB.Save(request)
+	database.PostgresDB.Save(&book)
 
-	c.JSON(http.StatusOK, gin.H{"data": book})
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"success": true,
+		"message": "",
+		"data":    request,
+	})
 }
 
-// DeleteBook DELETE /books/:id
+// Delete DELETE /books/:id
 // Delete a book
-func DeleteBook(c *gin.Context) {
+func (controller BookController) Delete(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
 	// Get model if exist
 	var book models.Book
-	if err := database.PostgresDB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
+	if err := database.PostgresDB.Where("id = ?", id).First(&book).Error; err != nil {
+		return ctx.Status(http.StatusNotFound).JSON(&fiber.Map{
+			"success": false,
+			"message": "",
+			"data":    err,
+		})
 	}
 
 	database.PostgresDB.Delete(&book)
 
-	c.JSON(http.StatusOK, gin.H{"data": true})
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
+		"success": true,
+		"message": "",
+		"data":    book,
+	})
 }
