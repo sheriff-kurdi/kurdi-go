@@ -19,17 +19,17 @@ func NewBookController() *BookController {
 
 // GetAll GET /books
 // GetAll all books
-func (controller BookController) GetAll(c *fiber.Ctx) error {
+func (controller BookController) GetAll(ctx *fiber.Ctx) error {
 	var books []responses.BookResponse
 	err := database.PostgresDB.Model(&models.Book{}).Scan(&books).Error
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+		return ctx.Status(http.StatusInternalServerError).JSON(&fiber.Map{
 			"success": false,
 			"message": "",
 			"data":    err,
 		})
 	}
-	return c.Status(http.StatusOK).JSON(&fiber.Map{
+	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"success": true,
 		"message": "",
 		"data":    books,
