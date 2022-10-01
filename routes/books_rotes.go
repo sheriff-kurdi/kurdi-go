@@ -17,10 +17,10 @@ func BooksRoutes(booksApp *fiber.App) {
 		})
 	})
 
-	booksApp.Get("/books", controllers.FindBooks)
+	booksApp.Get("/books", controllers.Find)
 	booksApp.Get("/books/bulk-edit", controllers.BulkEdit)
-	booksApp.Get("/books/:id", controllers.FindBook)
-	booksApp.Post("/books", controllers.CreateBook)
-	booksApp.Patch("/books/:id", controllers.UpdateBook)
-	booksApp.Delete("/books/:id", controllers.DeleteBook)
+	booksApp.Get("/books/:id", controllers.FindById)
+	booksApp.Post("/books", controllers.Create)
+	booksApp.Patch("/books/:id", controllers.Update)
+	booksApp.Delete("/books/:id", controllers.Delete)
 }

@@ -7,9 +7,9 @@ import (
 	"kurdi-go/requests"
 )
 
-// FindBooks GET /books
+// Find GET /books
 // Find all books
-func FindBooks(c *fiber.Ctx) error {
+func Find(c *fiber.Ctx) error {
 	var books []models.Book
 	database.PostgresDB.Find(&books)
 
@@ -54,9 +54,9 @@ func BulkEdit(c *fiber.Ctx) error {
 	})
 }
 
-// FindBook GET /books/:id
+// FindById GET /books/:id
 // Find a book
-func FindBook(c *fiber.Ctx) error {
+func FindById(c *fiber.Ctx) error {
 	// Get model if exist
 	var book models.Book
 	if err := database.PostgresDB.Where("id = ?", c.QueryParser("id")).First(&book).Error; err != nil {
@@ -74,9 +74,9 @@ func FindBook(c *fiber.Ctx) error {
 	})
 }
 
-// CreateBook POST /books
+// Create POST /books
 // Create new book
-func CreateBook(c *fiber.Ctx) error {
+func Create(c *fiber.Ctx) error {
 	var request requests.BookRequest
 	if err := c.BodyParser(&request); err != nil {
 		return c.Status(200).JSON(&fiber.Map{
@@ -97,9 +97,9 @@ func CreateBook(c *fiber.Ctx) error {
 	})
 }
 
-// UpdateBook PATCH /books/:id
+// Update PATCH /books/:id
 // Update a book
-func UpdateBook(c *fiber.Ctx) error {
+func Update(c *fiber.Ctx) error {
 	// Get model if exist
 	var book models.Book
 	if err := database.PostgresDB.Where("id = ?", c.QueryParser("id")).First(&book).Error; err != nil {
@@ -131,9 +131,9 @@ func UpdateBook(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteBook DELETE /books/:id
+// Delete DELETE /books/:id
 // Delete a book
-func DeleteBook(c *fiber.Ctx) error {
+func Delete(c *fiber.Ctx) error {
 	// Get model if exist
 	var book models.Book
 	if err := database.PostgresDB.Where("id = ?", c.QueryParser("id")).First(&book).Error; err != nil {
