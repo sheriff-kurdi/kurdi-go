@@ -11,16 +11,16 @@ var SqliteDB *gorm.DB
 
 func Connect() {
 	dsn := "host=localhost user=postgres password=123456789 dbname=kurdi_go port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
+	postgresDb, postgresErr := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if postgresErr != nil {
+		panic(postgresErr)
 	}
-	PostgresDB = database
+	PostgresDB = postgresDb
 
-	SqliteDb, SqliteErr := gorm.Open(sqlite.Open("kurdi_go.db"), &gorm.Config{})
-	if SqliteErr != nil {
-		panic(err)
+	sqliteDb, sqliteErr := gorm.Open(sqlite.Open("kurdi_go.db"), &gorm.Config{})
+	if sqliteErr != nil {
+		panic(sqliteErr)
 	}
-	SqliteDB = SqliteDb
+	SqliteDB = sqliteDb
 
 }
