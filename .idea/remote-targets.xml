@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Ubuntu-22.04" type="wsl" uuid="7c5cbe09-35f3-446f-b936-8e43cb6f4d41">
+        <config>
+          <option name="distributionMsId" value="Ubuntu-22.04" />
+          <option name="projectRootOnTarget" value="/mnt/c/Program Files/JetBrains/GoLand 2022.2.3/jbr/bin&#10;/kurdi-go" />
+        </config>
+      </target>
+    </targets>
+  </component>
+</project>
