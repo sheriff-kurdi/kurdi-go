@@ -8,10 +8,3 @@ func PostgresAutoMigrate() {
 		return
 	}
 }
-
-func SQLLiteAutoMigrate() {
-	err := SqliteDB.AutoMigrate(&models.Book{})
-	if err != nil {
-		return
-	}
-}

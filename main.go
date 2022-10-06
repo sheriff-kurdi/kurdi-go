@@ -16,7 +16,6 @@ func main() {
 	//migrate database
 	//TODO:Migrate based on env variable
 	database.PostgresAutoMigrate()
-	database.SQLLiteAutoMigrate()
 
 	// Routes
 	routes.BooksRoutes(app)
