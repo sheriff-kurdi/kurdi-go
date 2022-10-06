@@ -27,6 +27,14 @@ func (controller BookController) GetAll(ctx *fiber.Ctx) error {
 	return ctx.Status(response.GetStatus()).JSON(response.GetData())
 }
 
+// GetAllDiscounted GET /books/discounted
+// GetAllDiscounted all discounted books
+func (controller BookController) GetAllDiscounted(ctx *fiber.Ctx) error {
+	//get all
+	response := controller.service.ListAllDiscounted()
+	return ctx.Status(response.GetStatus()).JSON(response.GetData())
+}
+
 // FindById GET /books/:id
 // Find a book
 func (controller BookController) FindById(ctx *fiber.Ctx) error {

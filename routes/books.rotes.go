@@ -19,6 +19,7 @@ func BooksRoutes(booksApp *fiber.App) {
 	})
 
 	booksApp.Get("/books", bookController.GetAll)
+	booksApp.Get("/books/discounted", bookController.GetAllDiscounted)
 	booksApp.Get("/books/:id", bookController.FindById)
 	booksApp.Post("/books", bookController.Create)
 	booksApp.Patch("/books/:id", bookController.Update)

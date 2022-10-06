@@ -25,6 +25,15 @@ func (service BookService) ListAll() (response resources.IResource) {
 	return resources.GetSuccess200Resource(books, "")
 }
 
+func (service BookService) ListAllDiscounted() (response resources.IResource) {
+	var books []responses.BookResponse
+	err := database.PostgresDB.Model(&models.Book{}).Where("is_discounted = ?", true).Scan(&books).Error
+	if err != nil {
+		return resources.GetError500Resource(err.Error())
+	}
+	return resources.GetSuccess200Resource(books, "")
+}
+
 func (service BookService) FindById(bookId int) (response resources.IResource) {
 	var book responses.BookResponse
 	if err := database.PostgresDB.Model(models.Book{}).Where("id = ?", bookId).First(&book).Scan(&book).Error; err != nil {
