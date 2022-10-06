@@ -2,7 +2,6 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"kurdi-go/responses"
 )
 
 type Book struct {
@@ -15,21 +14,9 @@ type Book struct {
 	IsDiscounted bool    `json:"is_discounted"`
 }
 
-func (book Book) GetBookResponse() responses.BookResponse {
-	var bookResponse responses.BookResponse
-
-	bookResponse.Id = int(book.ID)
-	bookResponse.CreatedAt = book.CreatedAt
-	bookResponse.UpdatedAt = book.UpdatedAt
-	bookResponse.Title = book.Title
-	bookResponse.Author = book.Author
-	bookResponse.CostPrice = book.CostPrice
-	bookResponse.SellingPrice = book.SellingPrice
-	bookResponse.Discount = book.Discount
-	bookResponse.IsDiscounted = book.IsDiscounted
-
+func (book *Book) AfterFind(tx *gorm.DB) (err error) {
 	if book.IsDiscounted {
-		bookResponse.SellingPrice = book.SellingPrice - book.Discount
+		book.SellingPrice -= book.Discount
 	}
-	return bookResponse
+	return
 }

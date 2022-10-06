@@ -3,16 +3,20 @@ package services
 import (
 	"kurdi-go/database"
 	"kurdi-go/models"
+	"kurdi-go/repositories"
 	"kurdi-go/requests"
 	"kurdi-go/resources"
 	"kurdi-go/responses"
 )
 
 type BookService struct {
+	repository *repositories.BookRepository
 }
 
 func NewBookService() *BookService {
-	service := BookService{}
+	service := BookService{
+		repository: repositories.NewBookRepository(),
+	}
 	return &service
 }
 
@@ -27,7 +31,7 @@ func (service BookService) ListAll() (response resources.IResource) {
 
 func (service BookService) ListAllDiscounted() (response resources.IResource) {
 	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&models.Book{}).Where("is_discounted = ?", true).Scan(&books).Error
+	books, err := service.repository.ListAllDiscounted()
 	if err != nil {
 		return resources.GetError500Resource(err.Error())
 	}
