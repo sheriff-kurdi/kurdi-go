@@ -12,9 +12,11 @@ import (
 func TestListOnlyDiscounted(test *testing.T) {
 	assert := assertion.New(test)
 	database.Connect()
+	connection := database.PostgresDB
+
 	// preparation
 	booksRepository := repositories.NewBookRepository()
-	books, err := booksRepository.ListAllDiscounted()
+	books, err := booksRepository.ListAllDiscounted(connection)
 	if err != nil {
 		test.Error(err)
 	}
@@ -27,9 +29,10 @@ func TestListOnlyDiscounted(test *testing.T) {
 func TestListWithWriteSellingPrice(test *testing.T) {
 	assert := assertion.New(test)
 	database.Connect()
+	connection := database.PostgresDB
 	// preparation
 	booksRepository := repositories.NewBookRepository()
-	books, err := booksRepository.ListAllDiscounted()
+	books, err := booksRepository.ListAllDiscounted(connection)
 	if err != nil {
 		test.Error(err)
 	}
