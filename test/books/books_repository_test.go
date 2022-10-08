@@ -29,7 +29,7 @@ func TestListWithWriteSellingPrice(test *testing.T) {
 	database.Connect()
 	// preparation
 	booksRepository := repositories.NewBookRepository()
-	books, err := booksRepository.ListAllDiscountedModel()
+	books, err := booksRepository.ListAllDiscounted()
 	if err != nil {
 		test.Error(err)
 	}

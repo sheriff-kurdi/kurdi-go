@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"kurdi-go/models"
 	"time"
 )
 
@@ -14,4 +15,17 @@ type BookResponse struct {
 	IsDiscounted bool      `json:"is_discounted"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+func (bookResponse BookResponse) ToResponse(bookModel models.Book) BookResponse {
+	bookResponse.Id = int(bookModel.ID)
+	bookResponse.Title = bookModel.Title
+	bookResponse.Author = bookModel.Author
+	bookResponse.CostPrice = bookModel.CostPrice
+	bookResponse.SellingPrice = bookModel.SellingPrice
+	bookResponse.Discount = bookModel.Discount
+	bookResponse.IsDiscounted = bookModel.IsDiscounted
+	bookResponse.CreatedAt = bookModel.CreatedAt
+	bookResponse.UpdatedAt = bookModel.UpdatedAt
+	return bookResponse
 }

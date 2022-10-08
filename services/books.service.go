@@ -21,21 +21,25 @@ func NewBookService() *BookService {
 }
 
 func (service BookService) ListAll() (response resources.IResource) {
-	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&models.Book{}).Scan(&books).Error
+	connection := database.PostgresDB
+	var booksResponse responses.BooksResponse
+	booksModel, err := service.repository.ListAll(connection)
 	if err != nil {
 		return resources.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(books, "")
+
+	return resources.GetSuccess200Resource(booksResponse.ToResponse(booksModel), "")
 }
 
 func (service BookService) ListAllDiscounted() (response resources.IResource) {
-	var books []responses.BookResponse
-	books, err := service.repository.ListAllDiscounted()
+	connection := database.PostgresDB
+	var booksResponse responses.BooksResponse
+	booksModel, err := service.repository.ListAllDiscounted(connection)
 	if err != nil {
 		return resources.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(books, "")
+
+	return resources.GetSuccess200Resource(booksResponse.ToResponse(booksModel), "")
 }
 
 func (service BookService) FindById(bookId int) (response resources.IResource) {
