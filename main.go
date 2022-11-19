@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/database"
-	"kurdi-go/routes"
+	"kurdi-go/api/routes"
+	"kurdi-go/infrastructure/database"
 )
 
 func main() {
@@ -11,15 +11,18 @@ func main() {
 	app := fiber.New()
 
 	//Database
-	// Connect to database
+	// Connect to infrastructure
 	database.Connect()
-	//migrate database
+	//migrate infrastructure
 	//TODO:Migrate based on env variable
 	database.PostgresAutoMigrate()
 	database.SQLLiteAutoMigrate()
 
 	// Routes
 	routes.BooksRoutes(app)
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World 👋!")
+	})
 	err := app.Listen(":3000")
 	if err != nil {
 		return

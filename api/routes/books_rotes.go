@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/controllers"
-	"kurdi-go/middlewares"
+	"kurdi-go/api/controllers"
+	"kurdi-go/api/middlewares"
 )
 
 func BooksRoutes(booksApp *fiber.App) {

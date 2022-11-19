@@ -3,7 +3,7 @@ package resources
 import (
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/kurdi_logger"
+	"kurdi-go/infrastructure"
 )
 
 type Error500 struct {
@@ -19,7 +19,7 @@ func GetError500Resource(message string) IResource {
 		"message": message,
 		"data":    errors,
 	}
-	kurdi_logger.Info(json.Marshal(errors))
+	infrastructure.Info(json.Marshal(errors))
 	resource := Error500{Status: 500, Message: "", Data: dataJson}
 	return &resource
 }

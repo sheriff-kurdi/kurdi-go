@@ -1,16 +1,18 @@
 package database
 
-import "kurdi-go/models"
+import (
+	"kurdi-go/domain/entities"
+)
 
 func PostgresAutoMigrate() {
-	err := PostgresDB.AutoMigrate(&models.Book{})
+	err := PostgresDB.AutoMigrate(&entities.Book{})
 	if err != nil {
 		return
 	}
 }
 
 func SQLLiteAutoMigrate() {
-	err := SqliteDB.AutoMigrate(&models.Book{})
+	err := SqliteDB.AutoMigrate(&entities.Book{})
 	if err != nil {
 		return
 	}

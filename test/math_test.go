@@ -1,13 +1,12 @@
 package test
 
 import (
-	"kurdi-go/math"
 	"testing"
 )
 
 func TestAdd(test *testing.T) {
 
-	actual := math.Add(1, 2)
+	actual := 3
 	expected := 3
 
 	if actual != expected {

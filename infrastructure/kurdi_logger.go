@@ -1,4 +1,4 @@
-package kurdi_logger
+package infrastructure
 
 import (
 	"encoding/json"

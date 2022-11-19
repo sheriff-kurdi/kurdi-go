@@ -1,11 +1,11 @@
 package services
 
 import (
-	"kurdi-go/database"
-	"kurdi-go/models"
-	"kurdi-go/requests"
-	"kurdi-go/resources"
-	"kurdi-go/responses"
+	"kurdi-go/api/requests"
+	resources2 "kurdi-go/api/resources"
+	"kurdi-go/api/responses"
+	"kurdi-go/domain/entities"
+	"kurdi-go/infrastructure/database"
 )
 
 type BookService struct {
@@ -16,54 +16,55 @@ func NewBookService() *BookService {
 	return &service
 }
 
-func (service BookService) ListAll() (response resources.IResource) {
+func (service BookService) ListAll() (response resources2.IResource) {
 	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&models.Book{}).Scan(&books).Error
+	err := database.PostgresDB.Model(&entities.Book{}).Scan(&books).Error
 	if err != nil {
-		return resources.GetError500Resource(err.Error())
+		return resources2.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(books, "")
+
+	return resources2.GetSuccess200Resource(books, "")
 }
 
-func (service BookService) FindById(bookId int) (response resources.IResource) {
+func (service BookService) FindById(bookId int) (response resources2.IResource) {
 	var book responses.BookResponse
-	if err := database.PostgresDB.Model(models.Book{}).Where("id = ?", bookId).First(&book).Scan(&book).Error; err != nil {
-		return resources.GetError500Resource(err.Error())
+	if err := database.PostgresDB.Model(entities.Book{}).Where("id = ?", bookId).First(&book).Scan(&book).Error; err != nil {
+		return resources2.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(book, "")
+	return resources2.GetSuccess200Resource(book, "")
 }
 
-func (service BookService) Create(request requests.BookRequest) (response resources.IResource) {
+func (service BookService) Create(request requests.BookRequest) (response resources2.IResource) {
 	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&models.Book{}).Scan(&books).Error
+	err := database.PostgresDB.Model(&entities.Book{}).Scan(&books).Error
 	if err != nil {
-		return resources.GetError500Resource(err.Error())
+		return resources2.GetError500Resource(err.Error())
 	}
-	bookModel := models.Book{Author: request.Author, Title: request.Title}
+	bookModel := entities.Book{Author: request.Author, Title: request.Title}
 	err = database.PostgresDB.Create(&bookModel).Error
 	if err != nil {
-		return resources.GetError500Resource(err.Error())
+		return resources2.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(bookModel, "created")
+	return resources2.GetSuccess200Resource(bookModel, "created")
 }
 
-func (service BookService) Update(request requests.BookRequest, bookId int) (response resources.IResource) {
-	var bookModel models.Book
+func (service BookService) Update(request requests.BookRequest, bookId int) (response resources2.IResource) {
+	var bookModel entities.Book
 	bookModel.Title = request.Title
 	bookModel.Author = request.Author
 	bookModel.ID = uint(bookId)
 	err := database.PostgresDB.Save(&bookModel).Error
 	if err != nil {
-		return resources.GetError500Resource(err.Error())
+		return resources2.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(bookModel, "updated")
+	return resources2.GetSuccess200Resource(bookModel, "updated")
 }
 
-func (service BookService) Delete(bookId int) (response resources.IResource) {
-	err := database.PostgresDB.Delete(&models.Book{}, bookId).Error
+func (service BookService) Delete(bookId int) (response resources2.IResource) {
+	err := database.PostgresDB.Delete(&entities.Book{}, bookId).Error
 	if err != nil {
-		return resources.GetError500Resource(err.Error())
+		return resources2.GetError500Resource(err.Error())
 	}
-	return resources.GetSuccess200Resource(bookId, "Deleted")
+	return resources2.GetSuccess200Resource(bookId, "Deleted")
 
 }
