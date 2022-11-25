@@ -1,4 +1,4 @@
-package stock_aggregate
+package entities_stock_aggregate
 
 type StockDetails struct {
 	NameAR        string `json:"name_ar"`

@@ -1,4 +1,4 @@
-package stock_aggregate
+package entities_stock_aggregate
 
 type StockPricing struct {
 	CostPrice    float32 `json:"cost_price"`

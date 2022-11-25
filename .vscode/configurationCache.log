@@ -1,1 +1,0 @@
-{"buildTargets":["buildUp","createDB","dropDB","migrateDown","migrateUp","startPostgres"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

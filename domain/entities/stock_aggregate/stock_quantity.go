@@ -1,4 +1,4 @@
-package stock_aggregate
+package entities_stock_aggregate
 
 type StockQuantity struct {
 	TotalStock     int `json:"total_stock"`
