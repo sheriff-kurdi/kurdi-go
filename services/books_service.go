@@ -52,7 +52,7 @@ func (service BookService) Update(request requests.BookRequest, bookId int) (res
 	var bookModel entities.Book
 	bookModel.Title = request.Title
 	bookModel.Author = request.Author
-	bookModel.ID = uint(bookId)
+	bookModel.ID = bookId
 	err := database.PostgresDB.Save(&bookModel).Error
 	if err != nil {
 		return resources2.GetError500Resource(err.Error())
