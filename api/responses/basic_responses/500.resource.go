@@ -1,4 +1,4 @@
-package resources
+package basic_responses
 
 import (
 	"encoding/json"

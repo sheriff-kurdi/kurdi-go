@@ -1,10 +1,8 @@
 package services
 
 import (
-	"kurdi-go/api/requests"
-	resources2 "kurdi-go/api/resources"
-	"kurdi-go/api/responses"
-	"kurdi-go/domain/entities"
+	requests_stock "kurdi-go/api/requests/stock"
+	"kurdi-go/api/responses/basic_responses"
 	entities_stock_aggregate "kurdi-go/domain/entities/stock_aggregate"
 	"kurdi-go/infrastructure/database"
 )
@@ -17,54 +15,60 @@ func NeStockService() *StockService {
 	return &service
 }
 
-func (service StockService) ListAll() (response resources2.IResource) {
+func (service StockService) ListAll() (response basic_responses.IResource) {
 	var stockItems []entities_stock_aggregate.StockItem
-	err := database.PostgresDB.Model(&entities_stock_aggregate.StockItem{}).Scan(&stockItems).Error
+	err := database.PostgresDB.Model(&entities_stock_aggregate.StockItem{}).Preload("Details", "language_code = ?", "ar").Find(&stockItems).Error
 	if err != nil {
-		return resources2.GetError500Resource(err.Error())
+		return basic_responses.GetError500Resource(err.Error())
 	}
-	return resources2.GetSuccess200Resource(stockItems, "")
+	return basic_responses.GetSuccess200Resource(stockItems, "")
 }
 
-func (service StockService) FindById(stockId int) (response resources2.IResource) {
+func (service StockService) FindById(stockId string) (response basic_responses.IResource) {
 	var stockItem entities_stock_aggregate.StockItem
-	if err := database.PostgresDB.Model(entities_stock_aggregate.StockItem{}).Where("id = ?", stockId).First(&stockItem).Scan(&stockItem).Error; err != nil {
-		return resources2.GetError500Resource(err.Error())
+	if err := database.PostgresDB.Model(entities_stock_aggregate.StockItem{}).Where("sku = ?", stockId).First(&stockItem).Preload("Details", "language_code = ?", "ar").Find(&stockItem).Error; err != nil {
+		return basic_responses.GetError500Resource(err.Error())
 	}
-	return resources2.GetSuccess200Resource(stockItem, "")
+	return basic_responses.GetSuccess200Resource(stockItem, "")
 }
 
-func (service StockService) Create(request requests.BookRequest) (response resources2.IResource) {
-	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&entities.Book{}).Scan(&books).Error
+func (service StockService) Create(request requests_stock.CreateStockRequest) (response basic_responses.IResource) {
+	var stockItemModel entities_stock_aggregate.StockItem
+	stockItemModel.SKU = request.SKU
+	stockItemModel.Details = request.Details
+	stockItemModel.TotalStock = request.TotalStock
+	stockItemModel.SellingPrice = request.SellingPrice
+	stockItemModel.Discount = request.Discount
+	stockItemModel.IsDiscounted = request.IsDiscounted
+
+	err := database.PostgresDB.Save(&stockItemModel).Error
 	if err != nil {
-		return resources2.GetError500Resource(err.Error())
+		return basic_responses.GetError500Resource(err.Error())
 	}
-	bookModel := entities.Book{Author: request.Author, Title: request.Title}
-	err = database.PostgresDB.Create(&bookModel).Error
-	if err != nil {
-		return resources2.GetError500Resource(err.Error())
-	}
-	return resources2.GetSuccess200Resource(bookModel, "created")
+	return basic_responses.GetSuccess200Resource(stockItemModel, "created")
 }
 
-func (service StockService) Update(request requests.BookRequest, bookId int) (response resources2.IResource) {
-	var bookModel entities.Book
-	bookModel.Title = request.Title
-	bookModel.Author = request.Author
-	bookModel.ID = bookId
-	err := database.PostgresDB.Save(&bookModel).Error
+func (service StockService) Update(request requests_stock.UpdateStockRequest, sku string) (response basic_responses.IResource) {
+	var stockItemModel entities_stock_aggregate.StockItem
+	stockItemModel.SKU = request.SKU
+	stockItemModel.Details = request.Details
+	stockItemModel.TotalStock = request.TotalStock
+	stockItemModel.SellingPrice = request.SellingPrice
+	stockItemModel.Discount = request.Discount
+	stockItemModel.IsDiscounted = request.IsDiscounted
+
+	err := database.PostgresDB.Save(&stockItemModel).Error
 	if err != nil {
-		return resources2.GetError500Resource(err.Error())
+		return basic_responses.GetError500Resource(err.Error())
 	}
-	return resources2.GetSuccess200Resource(bookModel, "updated")
+	return basic_responses.GetSuccess200Resource(stockItemModel, "updated")
 }
 
-func (service StockService) Delete(stockId int) (response resources2.IResource) {
+func (service StockService) Delete(stockId int) (response basic_responses.IResource) {
 	err := database.PostgresDB.Delete(&entities_stock_aggregate.StockItem{}, stockId).Error
 	if err != nil {
-		return resources2.GetError500Resource(err.Error())
+		return basic_responses.GetError500Resource(err.Error())
 	}
-	return resources2.GetSuccess200Resource(stockId, "Deleted")
+	return basic_responses.GetSuccess200Resource(stockId, "Deleted")
 
 }

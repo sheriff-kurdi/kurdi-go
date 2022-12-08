@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/gofiber/fiber/v2"
 	"kurdi-go/api/requests"
-	"kurdi-go/api/resources"
+	"kurdi-go/api/responses/basic_responses"
 	"kurdi-go/services"
 	"strconv"
 )
@@ -32,7 +32,7 @@ func (controller BookController) GetAll(ctx *fiber.Ctx) error {
 func (controller BookController) FindById(ctx *fiber.Ctx) error {
 	bookId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//find by id
@@ -45,7 +45,7 @@ func (controller BookController) FindById(ctx *fiber.Ctx) error {
 func (controller BookController) Create(ctx *fiber.Ctx) error {
 	var request requests.BookRequest
 	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//create
@@ -59,13 +59,13 @@ func (controller BookController) Update(ctx *fiber.Ctx) error {
 	//check param
 	bookId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	// Validate request
 	var request requests.BookRequest
 	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//update
@@ -79,7 +79,7 @@ func (controller BookController) Delete(ctx *fiber.Ctx) error {
 	//check param
 	bookId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//delete

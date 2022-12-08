@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/api/requests"
-	"kurdi-go/api/resources"
+	requests_stock "kurdi-go/api/requests/stock"
+	"kurdi-go/api/responses/basic_responses"
 	"kurdi-go/services"
+	lib "kurdi-go/shared"
 	"strconv"
 )
 
@@ -30,24 +31,21 @@ func (controller StockController) GetAll(ctx *fiber.Ctx) error {
 // FindById GET /stocks/:id
 // Find a stock
 func (controller StockController) FindById(ctx *fiber.Ctx) error {
-	stockId, err := strconv.Atoi(ctx.Params("id"))
-	if err != nil {
-		response := resources.GetError500Resource(err.Error())
-		return ctx.Status(response.GetStatus()).JSON(response.GetData())
-	}
+	sku := ctx.Params("id")
 	//find by id
-	response := controller.service.FindById(stockId)
+	response := controller.service.FindById(sku)
 	return ctx.Status(response.GetStatus()).JSON(response.GetData())
 }
 
 // Create POST /stock
 // Create new stock
 func (controller StockController) Create(ctx *fiber.Ctx) error {
-	var request requests.BookRequest
+	var request requests_stock.CreateStockRequest
 	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
+
 	//create
 	response := controller.service.Create(request)
 	return ctx.Status(response.GetStatus()).JSON(response.GetData())
@@ -57,19 +55,20 @@ func (controller StockController) Create(ctx *fiber.Ctx) error {
 // Update a stock
 func (controller StockController) Update(ctx *fiber.Ctx) error {
 	//check param
-	stockId, err := strconv.Atoi(ctx.Params("id"))
-	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+	sku := ctx.Params("sku")
+	// Validate request
+	var request requests_stock.UpdateStockRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
-	// Validate request
-	var request requests.BookRequest
-	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+	if sku != request.SKU {
+		response := basic_responses.GetError400Resource(lib.Translate("GENERAL.THERE_IS_AN_ERROR"))
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
+
 	}
 	//update
-	response := controller.service.Update(request, stockId)
+	response := controller.service.Update(request, sku)
 	return ctx.Status(response.GetStatus()).JSON(response.GetData())
 }
 
@@ -79,7 +78,7 @@ func (controller StockController) Delete(ctx *fiber.Ctx) error {
 	//check param
 	stockId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := basic_responses.GetError500Resource(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//delete
