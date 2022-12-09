@@ -72,6 +72,57 @@ func (controller StockController) Update(ctx *fiber.Ctx) error {
 	return ctx.Status(response.GetStatus()).JSON(response.GetData())
 }
 
+// Reserve PUT /stock/reserve/:id
+// Update a stock
+func (controller StockController) Reserve(ctx *fiber.Ctx) error {
+	//check param
+	sku := ctx.Params("sku")
+	// Validate request
+	var request requests_stock.QuantityRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		response := basic_responses.GetError500Resource(err.Error())
+		return ctx.Status(response.GetStatus()).JSON(response.GetData())
+	}
+
+	//update
+	response := controller.service.Reserve(request, sku)
+	return ctx.Status(response.GetStatus()).JSON(response.GetData())
+}
+
+// UnReserve PUT /stock/un-reserve/:id
+// Update a stock
+func (controller StockController) UnReserve(ctx *fiber.Ctx) error {
+	//check param
+	sku := ctx.Params("sku")
+	// Validate request
+	var request requests_stock.QuantityRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		response := basic_responses.GetError500Resource(err.Error())
+		return ctx.Status(response.GetStatus()).JSON(response.GetData())
+	}
+
+	//update
+	response := controller.service.UnReserve(request, sku)
+	return ctx.Status(response.GetStatus()).JSON(response.GetData())
+}
+
+// AddStock PUT /stock/add-stock/:id
+// Update a stock
+func (controller StockController) AddStock(ctx *fiber.Ctx) error {
+	//check param
+	sku := ctx.Params("sku")
+	// Validate request
+	var request requests_stock.QuantityRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		response := basic_responses.GetError500Resource(err.Error())
+		return ctx.Status(response.GetStatus()).JSON(response.GetData())
+	}
+
+	//update
+	response := controller.service.AddStock(request, sku)
+	return ctx.Status(response.GetStatus()).JSON(response.GetData())
+}
+
 // Delete DELETE /stock/:id
 // Delete a book
 func (controller StockController) Delete(ctx *fiber.Ctx) error {
