@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"kurdi-go/src/api/routes"
 	"kurdi-go/src/infrastructure/database"
+	"kurdi-go/src/infrastructure/logger"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,28 +13,25 @@ import (
 func main() {
 	//app
 	app := fiber.New()
+	logger := logger.ZapLogger()
 
-	envFile := godotenv.Load(".env")
-	if envFile != nil {
-		fmt.Print("Error loading .env testing file")
+	if err := godotenv.Load(".env"); err != nil {
+		logger.Warn("Error loading .env testing file")
 	}
-	
-	//Database
-	// Connect to infrastructure
+
+	// Connect to Database
 	database.Connect()
-	//migrate infrastructure
+	//Migrate Database
 	database.PostgresAutoMigrate()
 	database.SQLLiteAutoMigrate()
 
 	// Routes
 	routes.StockRoutes(app)
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World 👋!")
-	})
-	err := app.Listen(os.Getenv("PORT"))
-	if err != nil {
+	if err := app.Listen(os.Getenv("PORT")); err != nil {
+		logger.Error(err.Error())
 		return
 	}
 
+	logger.Info("App started!")
 }

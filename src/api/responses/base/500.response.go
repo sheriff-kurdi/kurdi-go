@@ -1,6 +1,8 @@
 package base
 
 import (
+	"kurdi-go/src/infrastructure/logger"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,10 +15,12 @@ type Error500 struct {
 func GetError500Response(message string) IResponse {
 	errors := make(map[string]interface{})
 	dataJson := &fiber.Map{
-		"success": true,
-		"message": message,
+		"success": false,
+		"message": "There is internal serval error.",
 		"data":    errors,
 	}
+	logger := logger.ZapLogger()
+	logger.Error(message)
 	resource := Error500{Status: 500, Message: "", Data: dataJson}
 	return &resource
 }

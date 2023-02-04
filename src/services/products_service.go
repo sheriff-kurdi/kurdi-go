@@ -19,7 +19,7 @@ func NeStockService() *StockService {
 
 func (service StockService) ListAll() (response resources.IResponse) {
 	var stockItems []models.Product
-	err := database.PostgresDB.Model(&models.Product{}).First(&stockItems).Error
+	err := database.PostgresDB.Model(&models.Product{}).Where("sa").First(&stockItems).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
