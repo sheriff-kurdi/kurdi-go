@@ -1,6 +1,10 @@
 package products
 
-import "kurdi-go/domain/entities"
+import (
+	"kurdi-go/domain/entities"
+	"time"
+	"gorm.io/gorm"
+)
 
 type Product struct {
 	SKU string `json:"sku"`
@@ -9,3 +13,21 @@ type Product struct {
 	ProductQuantity
 	entities.Entity
 }
+
+func (m *Product) BeforeUpdate(tx *gorm.DB) (err error) {
+	m.UpdatedAt = time.Now()
+	return
+}
+
+func (m *Product) BeforeCreate(tx *gorm.DB) (err error) {
+	m.CreatedAt = time.Now()
+	return
+}
+
+func (m *Product) AfterFind(tx *gorm.DB) (err error) {
+	if m.IsDiscounted {
+		m.SellingPrice = m.SellingPrice - m.Discount
+	}
+	return
+}
+

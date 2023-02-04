@@ -19,7 +19,6 @@ func main() {
 	database.SQLLiteAutoMigrate()
 
 	// Routes
-	routes.BooksRoutes(app)
 	routes.StockRoutes(app)
 
 	app.Get("/", func(c *fiber.Ctx) error {

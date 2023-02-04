@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"kurdi-go/api/requests"
-	"kurdi-go/api/resources"
+	responses "kurdi-go/api/responses/base"
 	"kurdi-go/services"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type StockController struct {
@@ -32,7 +33,7 @@ func (controller StockController) GetAll(ctx *fiber.Ctx) error {
 func (controller StockController) FindById(ctx *fiber.Ctx) error {
 	stockId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := responses.GetError500Response(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//find by id
@@ -45,7 +46,7 @@ func (controller StockController) FindById(ctx *fiber.Ctx) error {
 func (controller StockController) Create(ctx *fiber.Ctx) error {
 	var request requests.BookRequest
 	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := responses.GetError500Response(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//create
@@ -59,13 +60,13 @@ func (controller StockController) Update(ctx *fiber.Ctx) error {
 	//check param
 	stockId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := responses.GetError500Response(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	// Validate request
 	var request requests.BookRequest
 	if err := ctx.BodyParser(&request); err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := responses.GetError500Response(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//update
@@ -79,7 +80,7 @@ func (controller StockController) Delete(ctx *fiber.Ctx) error {
 	//check param
 	stockId, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
-		response := resources.GetError500Resource(err.Error())
+		response := responses.GetError500Response(err.Error())
 		return ctx.Status(response.GetStatus()).JSON(response.GetData())
 	}
 	//delete
