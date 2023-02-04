@@ -1,7 +1,7 @@
 package products
 
 import (
-	models "kurdi-go/domain/entities/aggregates/products"
+	models "kurdi-go/src/domain/entities/aggregates/products"
 )
 
 type ProductResponse struct {
