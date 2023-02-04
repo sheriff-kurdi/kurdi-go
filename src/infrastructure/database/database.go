@@ -13,7 +13,8 @@ var SqliteDB *gorm.DB
 
 func Connect() {
 
-	database, err := gorm.Open(postgres.Open(os.Getenv("DB_CONNECTION")), &gorm.Config{})
+	dsn := os.Getenv("DB_CONNECTION")
+	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
