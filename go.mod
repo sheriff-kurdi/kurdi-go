@@ -6,8 +6,8 @@ require (
 	github.com/gofiber/fiber/v2 v2.38.1
 	github.com/sirupsen/logrus v1.4.2
 	gorm.io/driver/postgres v1.3.8
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
+	gorm.io/driver/sqlite v1.4.4
+	gorm.io/gorm v1.24.0
 )
 
 require (
@@ -24,7 +24,7 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/mattn/go-sqlite3 v1.14.12 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.40.0 // indirect

@@ -2,7 +2,7 @@ package database
 
 import (
 	"kurdi-go/domain/entities"
-	entities_stock_aggregate "kurdi-go/domain/entities/stock_aggregate"
+	models "kurdi-go/domain/entities/aggregates/products"
 )
 
 func PostgresAutoMigrate() {
@@ -10,7 +10,7 @@ func PostgresAutoMigrate() {
 	if err != nil {
 		return
 	}
-	err = PostgresDB.AutoMigrate(&entities_stock_aggregate.StockItem{})
+	err = PostgresDB.AutoMigrate(&models.Product{})
 	if err != nil {
 		return
 	}
