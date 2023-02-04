@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"kurdi-go/api/requests"
-	responses "kurdi-go/api/responses/base"
-	"kurdi-go/services"
+	"kurdi-go/src/api/requests"
+	responses "kurdi-go/src/api/responses/base"
+	"kurdi-go/src/services"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

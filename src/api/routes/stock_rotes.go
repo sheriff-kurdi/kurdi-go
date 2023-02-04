@@ -1,9 +1,10 @@
 package routes
 
 import (
+	"kurdi-go/src/api/controllers"
+	"kurdi-go/src/api/middlewares"
+
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/api/controllers"
-	"kurdi-go/api/middlewares"
 )
 
 func StockRoutes(stockApp *fiber.App) {

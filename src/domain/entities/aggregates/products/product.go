@@ -1,8 +1,9 @@
 package products
 
 import (
-	"kurdi-go/domain/entities"
+	"kurdi-go/src/domain/entities"
 	"time"
+
 	"gorm.io/gorm"
 )
 

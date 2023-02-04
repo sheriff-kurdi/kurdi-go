@@ -1,8 +1,8 @@
 package database
 
 import (
-	"kurdi-go/domain/entities"
-	models "kurdi-go/domain/entities/aggregates/products"
+	"kurdi-go/src/domain/entities"
+	models "kurdi-go/src/domain/entities/aggregates/products"
 )
 
 func PostgresAutoMigrate() {

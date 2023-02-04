@@ -1,9 +1,10 @@
 package main
 
 import (
+	"kurdi-go/src/api/routes"
+	"kurdi-go/src/infrastructure/database"
+
 	"github.com/gofiber/fiber/v2"
-	"kurdi-go/api/routes"
-	"kurdi-go/infrastructure/database"
 )
 
 func main() {

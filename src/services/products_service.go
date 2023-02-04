@@ -1,12 +1,12 @@
 package services
 
 import (
-	"kurdi-go/api/requests"
-	resources "kurdi-go/api/responses/base"
-	"kurdi-go/api/responses"
-	"kurdi-go/domain/entities"
-	models "kurdi-go/domain/entities/aggregates/products"
-	"kurdi-go/infrastructure/database"
+	"kurdi-go/src/api/requests"
+	"kurdi-go/src/api/responses"
+	resources "kurdi-go/src/api/responses/base"
+	"kurdi-go/src/domain/entities"
+	models "kurdi-go/src/domain/entities/aggregates/products"
+	"kurdi-go/src/infrastructure/database"
 )
 
 type StockService struct {

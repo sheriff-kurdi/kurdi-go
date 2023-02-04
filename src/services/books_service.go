@@ -1,11 +1,11 @@
 package services
 
 import (
-	"kurdi-go/api/requests"
-	resources "kurdi-go/api/responses/base"
-	"kurdi-go/api/responses"
-	"kurdi-go/domain/entities"
-	"kurdi-go/infrastructure/database"
+	"kurdi-go/src/api/requests"
+	resources "kurdi-go/src/api/responses/base"
+	"kurdi-go/src/api/responses"
+	"kurdi-go/src/domain/entities"
+	"kurdi-go/src/infrastructure/database"
 )
 
 type BookService struct {
