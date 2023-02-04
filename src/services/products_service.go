@@ -19,7 +19,7 @@ func NeStockService() *StockService {
 
 func (service StockService) ListAll() (response resources.IResponse) {
 	var stockItems []models.Product
-	err := database.PostgresDB.Model(&models.Product{}).Scan(&stockItems).Error
+	err := database.PostgresDB.Model(&models.Product{}).First(&stockItems).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
@@ -28,7 +28,7 @@ func (service StockService) ListAll() (response resources.IResponse) {
 
 func (service StockService) FindById(bookId int) (response resources.IResponse) {
 	var stock responses.BookResponse
-	if err := database.PostgresDB.Model(entities.Book{}).Where("id = ?", bookId).First(&stock).Scan(&stock).Error; err != nil {
+	if err := database.PostgresDB.Model(entities.Book{}).Where("id = ?", bookId).First(&stock).Error; err != nil {
 		return resources.GetError500Response(err.Error())
 	}
 	return resources.GetSuccess200Response(stock, "")
