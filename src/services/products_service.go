@@ -1,70 +1,60 @@
 package services
 
 import (
-	"kurdi-go/src/api/requests"
-	"kurdi-go/src/api/responses"
+	requests "kurdi-go/src/api/requests/products"
 	resources "kurdi-go/src/api/responses/base"
-	"kurdi-go/src/domain/entities"
-	models "kurdi-go/src/domain/entities/aggregates/products"
+	productsAggregate "kurdi-go/src/domain/entities/aggregates/products"
 	"kurdi-go/src/infrastructure/database"
 )
 
-type StockService struct {
+type ProductsService struct {
 }
 
-func NeStockService() *StockService {
-	service := StockService{}
+func NewProductsService() *ProductsService {
+	service := ProductsService{}
 	return &service
 }
 
-func (service StockService) ListAll() (response resources.IResponse) {
-	var stockItems []models.Product
-	err := database.PostgresDB.Model(&models.Product{}).Where("sa").First(&stockItems).Error
+func (service ProductsService) ListAll() (response resources.IResponse) {
+	var products []productsAggregate.Product
+	err := database.PostgresDB.Model(&productsAggregate.Product{}).Find(&products).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
-	return resources.GetSuccess200Response(stockItems, "")
+	return resources.GetSuccess200Response(products, "")
 }
 
-func (service StockService) FindById(bookId int) (response resources.IResponse) {
-	var stock responses.BookResponse
-	if err := database.PostgresDB.Model(entities.Book{}).Where("id = ?", bookId).First(&stock).Error; err != nil {
+func (service ProductsService) FindBySKU(sku string) (response resources.IResponse) {
+	var product productsAggregate.Product
+	if err := database.PostgresDB.Model(productsAggregate.Product{}).Where("sku = ?", sku).First(&product).Error; err != nil {
 		return resources.GetError500Response(err.Error())
 	}
-	return resources.GetSuccess200Response(stock, "")
+	return resources.GetSuccess200Response(product, "")
 }
 
-func (service StockService) Create(request requests.BookRequest) (response resources.IResponse) {
-	var books []responses.BookResponse
-	err := database.PostgresDB.Model(&entities.Book{}).Scan(&books).Error
+func (service ProductsService) Create(request requests.CreateProductRequest) (response resources.IResponse) {
+	product := productsAggregate.Product{}
+	err := database.PostgresDB.Create(&product).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
-	bookModel := entities.Book{Author: request.Author, Title: request.Title}
-	err = database.PostgresDB.Create(&bookModel).Error
-	if err != nil {
-		return resources.GetError500Response(err.Error())
-	}
-	return resources.GetSuccess200Response(bookModel, "created")
+	return resources.GetSuccess200Response(product, "created")
 }
 
-func (service StockService) Update(request requests.BookRequest, bookId int) (response resources.IResponse) {
-	var bookModel entities.Book
-	bookModel.Title = request.Title
-	bookModel.Author = request.Author
-	bookModel.ID = uint(bookId)
-	err := database.PostgresDB.Save(&bookModel).Error
+func (service ProductsService) Update(request requests.UpdateProductRequest, SKU string) (response resources.IResponse) {
+	product := productsAggregate.Product{}
+	err := database.PostgresDB.Save(&product).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
-	return resources.GetSuccess200Response(bookModel, "updated")
+	return resources.GetSuccess200Response(product, "updated")
 }
 
-func (service StockService) Delete(bookId int) (response resources.IResponse) {
-	err := database.PostgresDB.Delete(&entities.Book{}, bookId).Error
+func (service ProductsService) Delete(SKU string) (response resources.IResponse) {
+	err := database.PostgresDB.Delete(&productsAggregate.Product{}, SKU).Error
 	if err != nil {
 		return resources.GetError500Response(err.Error())
 	}
-	return resources.GetSuccess200Response(bookId, "Deleted")
+	return resources.GetSuccess200Response(SKU, "Deleted")
 
 }

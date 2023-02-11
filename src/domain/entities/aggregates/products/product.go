@@ -8,8 +8,8 @@ import (
 )
 
 type Product struct {
-	SKU string `json:"sku"`
-	ProductDetails
+	SKU     string           `json:"sku"`
+	Details []ProductDetails `json:"details"`
 	ProductPrice
 	ProductQuantity
 	entities.Entity
@@ -31,4 +31,3 @@ func (m *Product) AfterFind(tx *gorm.DB) (err error) {
 	}
 	return
 }
-
