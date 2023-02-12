@@ -1,4 +1,4 @@
-package products
+package categories
 
 import (
 	"kurdi-go/src/domain/entities"

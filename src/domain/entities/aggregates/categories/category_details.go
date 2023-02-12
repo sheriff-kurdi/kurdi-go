@@ -1,4 +1,4 @@
-package products
+package categories
 
 type CategoryDetails struct {
 	NameAR        string `json:"name_ar"`
