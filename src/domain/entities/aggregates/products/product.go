@@ -2,14 +2,16 @@ package products
 
 import (
 	"kurdi-go/src/domain/entities"
+	"kurdi-go/src/domain/entities/aggregates/categories"
 	"time"
 
 	"gorm.io/gorm"
 )
 
 type Product struct {
-	SKU     string           `json:"sku"`
-	Details ProductDetails `json:"details"`
+	SKU        string                `json:"sku"`
+	Details    ProductDetails        `json:"details"`
+	Categories []categories.Category `json:"categories"`
 	ProductPrice
 	ProductQuantity
 	entities.Entity
