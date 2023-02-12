@@ -9,7 +9,7 @@ import (
 
 type Product struct {
 	SKU     string           `json:"sku"`
-	Details []ProductDetails `json:"details"`
+	Details ProductDetails `json:"details"`
 	ProductPrice
 	ProductQuantity
 	entities.Entity
